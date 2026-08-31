@@ -1,0 +1,21 @@
+{
+  "name": "@indexfeed/aggregator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Off-chain price aggregation, methodology engine, and oracle publisher",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./env": "./src/env.js"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.js\"",
+    "rebalance": "node src/cli.js rebalance",
+    "dry-run": "node src/cli.js rebalance --dry-run"
+  },
+  "dependencies": {
+    "@stellar/stellar-sdk": "17.0.1",
+    "dotenv": "17.4.2"
+  }
+}

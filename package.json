@@ -1,0 +1,19 @@
+{
+  "name": "indexfeed",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "On-chain crypto index oracle for Stellar / Soroban, metered with x402",
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "contracts:test": "cd contracts && cargo test",
+    "contracts:build": "cd contracts && stellar contract build"
+  }
+}

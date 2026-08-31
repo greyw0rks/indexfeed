@@ -1,0 +1,14 @@
+# Secrets and local state
+.env
+.env.*
+!.env.example
+state/
+node_modules/
+
+# Rust / Soroban build output
+contracts/target/
+**/*.wasm
+
+# Editor and OS noise
+.DS_Store
+*.swp
