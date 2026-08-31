@@ -25,12 +25,12 @@ number. Payment is the access control: no API keys, no accounts, no subscription
 ## Status
 
 Phase 1–2 complete, live on Stellar Testnet. All four components are wired end to
-end: epoch 0 is published on-chain and paid reads settle real USDC.
+end: epochs are published on-chain and paid reads settle real USDC.
 
 | Component | State |
 | --- | --- |
 | Oracle contract | Deployed to Testnet, 8 unit tests passing |
-| Aggregator | Live prices from 4 sources, epoch 0 published on-chain |
+| Aggregator | Live prices from 4 sources, epochs 0 and 1 published on-chain |
 | x402 API | Serving; all three paid routes settle end to end |
 | Reference client | Completes payment and reads — no API key, no account |
 
@@ -41,6 +41,10 @@ First settled payment: $0.01 USDC,
 [`e005a342…7ea8`](https://stellar.expert/explorer/testnet/tx/e005a342d4fe0837a35b0812e5a3825aeec58d8eaca42b187b1997a4d2e57ea8)
 (2026-08-31). Fees were sponsored by the facilitator — the payer's account is not
 the transaction source.
+
+Epoch 1 confirms the continuity adjustment holds against the chain: the level moved
+1000.0000000 → 999.1509525 on price movement alone, and epoch 0 remains readable at
+its original value. Rebalancing does not reset the index.
 
 Not yet done: mainnet deployment, live fundamentals feed, monitoring.
 

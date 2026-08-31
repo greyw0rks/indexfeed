@@ -97,6 +97,18 @@ node src/cli.js status                # local epoch vs chain epoch
 only *after* the chain confirms — so a failed publish leaves the next run
 recomputing the same epoch rather than skipping one.
 
+Verified across two epochs on 2026-08-31:
+
+| Epoch | Level | Tx |
+| --- | --- | --- |
+| 0 | 1000.0000000 | `3301c9a4…d044` |
+| 1 | 999.1509525 | `1adbd84a…a702` |
+
+The level moved on price movement alone — the constituent set was unchanged, and
+the divisor was re-solved so recomposition contributed nothing. Epoch 0 remains
+readable at its original value via `at_epoch`, which is the immutability guarantee
+holding in practice rather than only in the unit tests.
+
 ### 6. Serve
 
 ```bash
