@@ -1,0 +1,102 @@
+{
+  "computedAt": "2026-08-31T12:50:12.111Z",
+  "methodologyVersion": "1.0.0",
+  "methodologyHash": "6b044703b1a9a071e6648e0570ebfeba1a09cb4ebc59307d457c619f42eb96ca",
+  "levelDisplay": "1000.0000000",
+  "previousLevel": null,
+  "prices": {
+    "BTC": {
+      "price": 77821.9536897174,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "ETH": {
+      "price": 2449.1400000000003,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "XRP": {
+      "price": 1.36,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "SOL": {
+      "price": 102.62,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "ADA": {
+      "price": 0.19518,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "AVAX": {
+      "price": 7.1675,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "LINK": {
+      "price": 11.2691,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "XLM": {
+      "price": 0.17520338355478599,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "DOT": {
+      "price": 0.82396,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko"
+      ]
+    },
+    "UNI": {
+      "price": 5.0893,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    }
+  },
+  "priceRejections": [],
+  "sourceErrors": [],
+  "excluded": [],
+  "txHash": "3301c9a44835f8000e86187f1c575d7faa21ec667a527516fcc23639ca4fd044"
+}

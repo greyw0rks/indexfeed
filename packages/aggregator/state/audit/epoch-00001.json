@@ -1,0 +1,102 @@
+{
+  "computedAt": "2026-08-31T14:13:47.727Z",
+  "methodologyVersion": "1.0.0",
+  "methodologyHash": "6b044703b1a9a071e6648e0570ebfeba1a09cb4ebc59307d457c619f42eb96ca",
+  "levelDisplay": "999.1509525",
+  "previousLevel": 999.1509525339231,
+  "prices": {
+    "BTC": {
+      "price": 77915.485,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "ETH": {
+      "price": 2441.706245580271,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "XRP": {
+      "price": 1.362725259373199,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "SOL": {
+      "price": 102.4575,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "ADA": {
+      "price": 0.19426,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "AVAX": {
+      "price": 7.149902996941576,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "LINK": {
+      "price": 11.181434712918794,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "XLM": {
+      "price": 0.17497902280291688,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "DOT": {
+      "price": 0.82221,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko"
+      ]
+    },
+    "UNI": {
+      "price": 5.071563122381896,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    }
+  },
+  "priceRejections": [],
+  "sourceErrors": [],
+  "excluded": [],
+  "txHash": "1adbd84a1030e1880638b8a99d9caf3e91dcb9461ae53810174b7567edc5a702"
+}

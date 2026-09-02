@@ -88,6 +88,28 @@ node src/cli.js describe      # free: prices and network
 node src/cli.js latest        # pays, then reads
 ```
 
+## Publishing
+
+Epochs are published by `.github/workflows/rebalance.yml`, weekly on the
+methodology's 7-day cadence, with a `workflow_dispatch` trigger for publishing
+early or for a dry run. Publishing needs one secret, `PUBLISHER_SECRET_KEY`, and
+reads `ORACLE_CONTRACT_ID` / `STELLAR_NETWORK` / `READ_SOURCE_ACCOUNT` from
+repository variables.
+
+`packages/aggregator/state/` is tracked in git rather than ignored. The contract
+stores each epoch's level and weights but not the basket units or divisor, and
+those are what make epoch N+1 continuous with epoch N — so a stateless runner
+could only ever recompute epoch 0, which the contract's succession check would
+reject. Committing state is what makes scheduled publishing possible, and it puts
+the continuity inputs somewhere a third party can recompute the level from.
+Fixture state stays ignored: a fixture divisor must never become the basis for a
+real epoch.
+
+The workflow commits the new state and audit record after the chain confirms. If
+that push fails, the epoch is on-chain but its state is not in the repo, and
+every later rebalance will fail the succession check until it is — the run
+uploads `state/` as an artifact for exactly that case and fails loudly.
+
 ## How it works
 
 **Universe.** Constituent candidates are discovered live from CoinGecko and

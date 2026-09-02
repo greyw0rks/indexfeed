@@ -1,0 +1,108 @@
+# Weekly rebalance — the only automated writer to the oracle contract.
+#
+# The methodology sets a 7-day cadence, so this runs weekly and publishes one
+# epoch per run. Rebalance state is committed back to the repository on purpose:
+# the contract stores each epoch's level and weights but not the basket units or
+# divisor, and those are what make epoch N+1 continuous with epoch N. A runner is
+# ephemeral, so without committed state a scheduled publish could only ever
+# recompute epoch 0 — and the contract's succession check would reject it.
+name: Weekly rebalance
+
+on:
+  schedule:
+    # Mondays 03:17 UTC. Off the hour deliberately: GitHub delays scheduled runs
+    # most at :00, and on a weekly cadence a few minutes of drift is irrelevant.
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Compute and print the epoch, but publish nothing"
+        type: boolean
+        default: false
+
+# Two runs publishing at once would compute the same epoch, and the loser would
+# fail the on-chain succession check after already paying a fee.
+concurrency:
+  group: rebalance
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  rebalance:
+    # Forks have no secrets, so their scheduled runs would fail every cadence
+    # rather than quietly doing nothing.
+    if: github.repository == 'greyw0rks/indexfeed'
+    runs-on: ubuntu-latest
+    env:
+      STELLAR_NETWORK: ${{ vars.STELLAR_NETWORK || 'testnet' }}
+      ORACLE_CONTRACT_ID: ${{ vars.ORACLE_CONTRACT_ID }}
+      READ_SOURCE_ACCOUNT: ${{ vars.READ_SOURCE_ACCOUNT }}
+      PUBLISHER_SECRET_KEY: ${{ secrets.PUBLISHER_SECRET_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history so the state commit below can rebase onto a moved main.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # A published epoch cannot be edited, only superseded. Broken index math
+      # must not reach the chain, so the suite gates the publish.
+      - name: Test
+        run: npm test
+
+      - name: Chain head and local state
+        working-directory: packages/aggregator
+        run: node src/cli.js status
+
+      - name: Rebalance
+        working-directory: packages/aggregator
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ "${DRY_RUN}" = "true" ]; then
+            node src/cli.js rebalance --dry-run
+          else
+            node src/cli.js rebalance
+          fi
+
+      # An epoch that lands on-chain while its state exists only on the runner
+      # blocks every later rebalance. Keep a retrievable copy so a failed push
+      # below is recoverable by hand.
+      - name: Upload state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rebalance-state-${{ github.run_id }}
+          path: packages/aggregator/state/
+          if-no-files-found: warn
+
+      - name: Commit state
+        run: |
+          set -euo pipefail
+          git add packages/aggregator/state
+          if git diff --cached --quiet; then
+            echo "state unchanged — dry run, or nothing was published"
+            exit 0
+          fi
+          epoch=$(node -e "console.log(require('./packages/aggregator/state/state.json').epoch)")
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: record epoch ${epoch}"
+          # Rebase rather than force-push: losing a race must not discard another
+          # commit, and the audit trail is append-only regardless.
+          for _ in 1 2 3; do
+            if git push; then exit 0; fi
+            git pull --rebase --autostash
+          done
+          echo "::error::epoch ${epoch} is on-chain but its state could not be pushed."\
+               "Download the rebalance-state artifact from this run and commit it,"\
+               "or the next rebalance will fail the succession check."
+          exit 1

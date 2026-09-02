@@ -2,8 +2,15 @@
 .env
 .env.*
 !.env.example
-state/
 node_modules/
+
+# Rebalance state is tracked, not ignored: the basket units and divisor are not
+# on-chain, so without them the next epoch cannot be made continuous with the
+# last. Committing them is what lets an ephemeral CI runner publish at all, and
+# it puts the continuity inputs somewhere a third party can check them.
+# Fixture runs are excluded — a fixture divisor must never become the basis for
+# a real epoch.
+state/fixtures/
 
 # Rust / Soroban build output
 contracts/target/
@@ -12,3 +19,6 @@ contracts/target/
 # Editor and OS noise
 .DS_Store
 *.swp
+
+# Local agent scratch
+.atlas/

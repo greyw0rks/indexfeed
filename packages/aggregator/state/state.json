@@ -1,0 +1,47 @@
+{
+  "epoch": 1,
+  "basket": [
+    {
+      "symbol": "BTC",
+      "units": 3.2086048107125302
+    },
+    {
+      "symbol": "ETH",
+      "units": 102.38741881932957
+    },
+    {
+      "symbol": "XRP",
+      "units": 150598.1335455761
+    },
+    {
+      "symbol": "SOL",
+      "units": 1456.7379776325167
+    },
+    {
+      "symbol": "ADA",
+      "units": 240099.8200595909
+    },
+    {
+      "symbol": "AVAX",
+      "units": 3653.112915832199
+    },
+    {
+      "symbol": "LINK",
+      "units": 2002.2528661394272
+    },
+    {
+      "symbol": "XLM",
+      "units": 117284.84781182228
+    },
+    {
+      "symbol": "DOT",
+      "units": 20421.844511887964
+    },
+    {
+      "symbol": "UNI",
+      "units": 2575.0840869754825
+    }
+  ],
+  "divisor": 1000.8497689602593,
+  "methodologyHash": "6b044703b1a9a071e6648e0570ebfeba1a09cb4ebc59307d457c619f42eb96ca"
+}
