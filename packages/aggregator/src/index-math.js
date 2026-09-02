@@ -18,9 +18,52 @@ function totalCap(constituents, prices) {
   }, 0);
 }
 
+/**
+ * Capitalization of a *previous* basket, tolerating constituents that can no
+ * longer be priced.
+ *
+ * A departing constituent may be unpriceable in the same epoch it leaves — it
+ * was delisted, or every venue dropped it. Continuity still needs the old
+ * basket's value, so each constituent carries the price it was last valued at
+ * and that is used as the fallback. This is what a real index does when a name
+ * is removed: it is carried at its last known price, not dropped, since dropping
+ * it would make the level jump by that name's entire weight.
+ *
+ * @returns {{cap: number, staleSymbols: string[]}}
+ */
+function previousCap(constituents, prices) {
+  const staleSymbols = [];
+  let cap = 0;
+  for (const c of constituents) {
+    const current = prices.get(c.symbol)?.price;
+    if (Number.isFinite(current)) {
+      cap += current * c.units;
+      continue;
+    }
+    if (!Number.isFinite(c.lastPrice)) {
+      throw new Error(
+        `cannot value previous basket: ${c.symbol} has no current price and no recorded last price`,
+      );
+    }
+    cap += c.lastPrice * c.units;
+    staleSymbols.push(c.symbol);
+  }
+  return { cap, staleSymbols };
+}
+
 /** Inception divisor: pins the first level to `baseLevel`. */
 export function inceptionDivisor(constituents, prices, methodology = METHODOLOGY) {
   return totalCap(constituents, prices) / methodology.baseLevel;
+}
+
+/**
+ * Level of a previous basket at current prices, carrying unpriceable
+ * constituents at their last recorded price.
+ */
+export function previousBasketLevel(constituents, prices, divisor) {
+  if (!(divisor > 0)) throw new Error("divisor must be positive");
+  const { cap, staleSymbols } = previousCap(constituents, prices);
+  return { level: cap / divisor, staleSymbols };
 }
 
 /**
@@ -65,11 +108,19 @@ export function fromScaledValue(scaled) {
  * Units held per constituent for a target weight vector at current prices.
  * The basket is expressed in units so that between rebalances the weights
  * drift with price, as a real index does, instead of being re-pinned each read.
+ *
+ * Each entry records the price it was valued at. That is what lets a later epoch
+ * value this basket even if a constituent becomes unpriceable — see
+ * `previousBasketLevel`.
  */
 export function unitsForWeights(weights, prices, notional) {
   return weights.map((w) => {
     const quote = prices.get(w.symbol);
     if (!quote) throw new Error(`no reconciled price for ${w.symbol}`);
-    return { symbol: w.symbol, units: (notional * w.weight) / quote.price };
+    return {
+      symbol: w.symbol,
+      units: (notional * w.weight) / quote.price,
+      lastPrice: quote.price,
+    };
   });
 }

@@ -1,34 +1,73 @@
 /**
- * Eligibility screening and free-float market-cap weighting with a
- * concentration cap.
+ * Eligibility screening and market-cap weighting with a concentration cap.
  */
 import { METHODOLOGY, TOTAL_WEIGHT_BPS } from "./methodology.js";
+import { classifyExclusion } from "./classify.js";
 
 /**
  * Apply the eligibility rules to a candidate universe.
  *
- * @param {Array<{symbol: string, freeFloatMarketCapUsd: number,
- *   avgDailyVolumeUsd: number, listingAgeDays: number, isStablecoin?: boolean}>} universe
- * @returns {{eligible: Array, excluded: Array<{symbol: string, reason: string}>}}
+ * Order matters: classification runs first, so a stablecoin is reported as a
+ * stablecoin rather than as whichever numeric rule it happens to also fail.
+ * Exclusion reasons are the audit trail for why a name is absent, so they need
+ * to name the real cause.
+ *
+ * @param {Array<{symbol: string, name?: string, marketCapUsd: number,
+ *   volume24hUsd: number, listingAgeDays: number|null,
+ *   change24hPct?: number|null, change7dPct?: number|null, sources?: string[]}>} universe
+ * @returns {{eligible: Array, excluded: Array<{symbol: string, reason: string, detail?: string}>}}
  */
 export function screen(universe, methodology = METHODOLOGY) {
   const rules = methodology.eligibility;
+  const minProviders = methodology.fundamentals?.minProviders ?? 1;
   const eligible = [];
   const excluded = [];
 
   for (const asset of universe) {
     let reason = null;
-    if (rules.excludeStablecoins && asset.isStablecoin) reason = "stablecoin";
-    else if (asset.freeFloatMarketCapUsd < rules.minMarketCapUsd) reason = "market_cap";
-    else if (asset.avgDailyVolumeUsd < rules.minAvgDailyVolumeUsd) reason = "volume";
-    else if (asset.listingAgeDays < rules.minListingAgeDays) reason = "listing_age";
+    let detail;
 
-    if (reason) excluded.push({ symbol: asset.symbol, reason });
+    if (rules.excludeNonConstituents) {
+      reason = classifyExclusion(asset, { maxChangePct: rules.stableMaxChangePct });
+    }
+
+    if (!reason && (asset.sources?.length ?? 1) < minProviders) {
+      reason = "too_few_providers";
+      detail = `${asset.sources?.length ?? 0} of ${minProviders}`;
+    }
+    if (!reason && asset.marketCapUsd < rules.minMarketCapUsd) {
+      reason = "market_cap";
+      detail = `$${(asset.marketCapUsd / 1e6).toFixed(1)}M`;
+    }
+    if (!reason && asset.volume24hUsd < rules.minVolume24hUsd) {
+      reason = "volume";
+      detail = `$${(asset.volume24hUsd / 1e6).toFixed(2)}M`;
+    }
+    if (!reason && rules.minTurnoverBps) {
+      const turnoverBps = (asset.volume24hUsd / asset.marketCapUsd) * TOTAL_WEIGHT_BPS;
+      if (turnoverBps < rules.minTurnoverBps) {
+        reason = "turnover";
+        detail = `${turnoverBps.toFixed(1)}bps of ${rules.minTurnoverBps}`;
+      }
+    }
+    if (!reason) {
+      // A null age means no provider reported a listing date. Treated as
+      // failing the rule: an unknown-age asset could be days old, and admitting
+      // one on launch-price noise is worse than omitting it.
+      if (asset.listingAgeDays === null) {
+        reason = "unknown_listing_age";
+      } else if (asset.listingAgeDays < rules.minListingAgeDays) {
+        reason = "listing_age";
+        detail = `${asset.listingAgeDays}d`;
+      }
+    }
+
+    if (reason) excluded.push({ symbol: asset.symbol, reason, ...(detail ? { detail } : {}) });
     else eligible.push(asset);
   }
 
-  // Largest free float first, then take the top N.
-  eligible.sort((a, b) => b.freeFloatMarketCapUsd - a.freeFloatMarketCapUsd);
+  // Largest market cap first, then take the top N.
+  eligible.sort((a, b) => b.marketCapUsd - a.marketCapUsd);
   const selected = eligible.slice(0, methodology.targetSize);
   for (const asset of eligible.slice(methodology.targetSize)) {
     excluded.push({ symbol: asset.symbol, reason: "below_target_size" });
@@ -38,7 +77,7 @@ export function screen(universe, methodology = METHODOLOGY) {
 }
 
 /**
- * Free-float market-cap weights with an iterative concentration cap.
+ * Market-cap weights with an iterative concentration cap.
  *
  * Capping one name pushes its excess onto the others, which can lift a second
  * name over the cap — so this repeats until no name breaches it. Uncapped names
@@ -58,8 +97,8 @@ export function weight(assets, methodology = METHODOLOGY) {
     );
   }
 
-  const total = assets.reduce((s, a) => s + a.freeFloatMarketCapUsd, 0);
-  const weights = new Map(assets.map((a) => [a.symbol, a.freeFloatMarketCapUsd / total]));
+  const total = assets.reduce((s, a) => s + a.marketCapUsd, 0);
+  const weights = new Map(assets.map((a) => [a.symbol, a.marketCapUsd / total]));
   const capped = new Set();
 
   // Bounded by the number of names: each pass caps at least one more, or stops.

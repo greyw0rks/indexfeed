@@ -19,20 +19,44 @@ export const VALUE_SCALE = 10n ** BigInt(VALUE_DECIMALS);
  * whole object, forgetting to bump is still detectable — the hash moves anyway.
  */
 export const METHODOLOGY = {
-  version: "1.0.0",
+  version: "1.1.0",
   /** Target constituent count for the flagship index. */
   targetSize: 20,
   /** No single name may exceed this share, applied iteratively. */
   concentrationCapBps: 2_500,
   eligibility: {
-    /** Minimum free-float market cap in USD. */
+    /**
+     * Minimum market cap in USD, on circulating supply. Circulating supply is
+     * the closest free-data proxy for free float — it excludes unissued supply
+     * but not locked, treasury, or team holdings, so it overstates float for
+     * assets with large vesting schedules.
+     */
     minMarketCapUsd: 50_000_000,
-    /** Minimum 30-day average daily volume in USD. */
-    minAvgDailyVolumeUsd: 1_000_000,
-    /** Minimum days since first listing, to exclude launch-price noise. */
+    /** Minimum 24h volume in USD. An absolute floor on tradeability. */
+    minVolume24hUsd: 1_000_000,
+    /**
+     * Minimum 24h volume as a fraction of market cap, in basis points.
+     *
+     * This is the load-bearing liquidity rule and the absolute floor above is
+     * only a backstop. Weights are market-cap proportional, so an illiquid
+     * mega-cap receives a large weight its order book cannot support — the
+     * index would claim exposure that could not actually be traded. Turnover is
+     * scale-invariant and catches exactly that: on 2026-08-31 LEO showed a $8.9B
+     * cap against $0.2M of daily volume (0.002%), while AAVE at $1.9B traded
+     * $231M (12%). The absolute floor alone would rank LEO 4th by weight.
+     */
+    minTurnoverBps: 50,
+    /** Minimum days since first price data, to exclude launch-price noise. */
     minListingAgeDays: 90,
-    /** Stablecoins track the dollar, not the market; they are not index names. */
-    excludeStablecoins: true,
+    /**
+     * Stablecoins track the dollar, wrapped and staked assets duplicate exposure
+     * already in the index, and commodity tokens are not crypto exposure. All
+     * three are excluded by classification rather than by denylist — see
+     * `classify.js` for how each is detected and why.
+     */
+    excludeNonConstituents: true,
+    /** Max |% change| over both 24h and 7d for an asset to count as stable. */
+    stableMaxChangePct: 0.5,
   },
   /** Rebalance cadence in days. Epoch N is published every `cadenceDays`. */
   cadenceDays: 7,
@@ -44,6 +68,19 @@ export const METHODOLOGY = {
      * Guards against a single venue printing a bad tick or being manipulated.
      */
     maxDeviationBps: 500,
+  },
+  fundamentals: {
+    /**
+     * Minimum providers that must report an asset for its fundamentals to be
+     * trusted. Set to 1 because the two free providers disagree on 24h volume by
+     * 8–25% for the same asset on the same day (measured 2026-08-31), so
+     * requiring corroboration would not make volume more accurate — it would
+     * only shrink the universe. Market caps agree within 0.2%, which is why
+     * ranking is done on market cap and volume is only ever a threshold test.
+     */
+    minProviders: 1,
+    /** How many assets to pull from each provider before screening. */
+    universeSize: 150,
   },
   /** Divisor anchoring the index to its base level of 1000 at inception. */
   baseLevel: 1_000,

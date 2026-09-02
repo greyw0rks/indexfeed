@@ -21,5 +21,19 @@ export {
   bitstampSource,
   bitfinexSource,
 } from "./sources.js";
-export { SEED_UNIVERSE, UNIVERSE_SYMBOLS, SOURCE_IDS } from "./universe.js";
-export { loadConfig, buildSources } from "./config.js";
+export {
+  collectFundamentals,
+  coingeckoFundamentals,
+  coinpaprikaFundamentals,
+  fixtureFundamentals,
+} from "./fundamentals.js";
+export {
+  classifyExclusion,
+  looksLikeStablecoin,
+  looksLikeDerivative,
+  ExclusionReason,
+  STABLE_MAX_CHANGE_PCT,
+} from "./classify.js";
+export { createSymbolResolver, bitstampPair, bitfinexPair } from "./symbols.js";
+export { FIXTURE_UNIVERSE } from "./fixtures.js";
+export { loadConfig, buildSources, buildFundamentalsProviders } from "./config.js";

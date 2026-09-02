@@ -7,12 +7,25 @@ import { fromScaledValue } from "../src/index-math.js";
 
 const PRICES = { A: 100, B: 60, C: 30, D: 12, E: 6 };
 
-const universe = Object.keys(PRICES).map((symbol, i) => ({
-  symbol,
-  freeFloatMarketCapUsd: (5 - i) * 20e9,
-  avgDailyVolumeUsd: 50_000_000,
-  listingAgeDays: 500,
-}));
+/**
+ * Candidates shaped like `collectFundamentals` output. Volume scales with cap so
+ * every name clears the turnover rule, and the change values sit outside the
+ * stable band — a quiet asset classifies as a stablecoin and a null one as
+ * unknown volatility, either of which would empty the universe before pricing.
+ */
+const universe = Object.keys(PRICES).map((symbol, i) => {
+  const marketCapUsd = (5 - i) * 20e9;
+  return {
+    symbol,
+    name: `Asset ${symbol}`,
+    marketCapUsd,
+    volume24hUsd: marketCapUsd * 0.02,
+    listingAgeDays: 500,
+    change24hPct: -2.5,
+    change7dPct: -6,
+    sources: ["fixture-provider"],
+  };
+});
 
 /** Three sources within the deviation band, so reconciliation succeeds. */
 function sourcesAt(prices) {
@@ -88,7 +101,19 @@ test("a failing source is recorded but does not fail the rebalance", async () =>
 
 test("refuses to publish when no constituent survives", async () => {
   const dead = [{ name: "dead", async quotes() { return []; } }];
-  await assert.rejects(() => runRebalance({ sources: dead, universe }), /no eligible constituents/);
+  await assert.rejects(
+    () => runRebalance({ sources: dead, universe }),
+    /no eligible constituent could be priced/,
+  );
+});
+
+test("refuses to publish when screening empties the universe", async () => {
+  // Every name is a stablecoin by volatility, so nothing reaches pricing.
+  const stable = universe.map((a) => ({ ...a, change24hPct: 0.01, change7dPct: -0.02 }));
+  await assert.rejects(
+    () => runRebalance({ sources: sourcesAt(PRICES), universe: stable }),
+    /no eligible constituents after screening/,
+  );
 });
 
 test("audit records the price sources behind every constituent", async () => {

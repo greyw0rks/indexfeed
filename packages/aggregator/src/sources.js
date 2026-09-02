@@ -17,7 +17,12 @@
  * Reachability is not uniform: Binance, Kraken, Coinbase, and OKX are
  * geo-restricted or blocked from some hosts, which is precisely why the
  * pipeline treats a dead source as normal rather than fatal.
+ *
+ * Exchange adapters derive their pair names from the ticker; aggregator adapters
+ * take a resolver built from the fundamentals fetch, since their ids are opaque
+ * slugs that cannot be derived. See `symbols.js`.
  */
+import { bitfinexPair, bitstampPair } from "./symbols.js";
 
 /** Per-source timeout. A slow venue must not stall the rebalance. */
 const REQUEST_TIMEOUT_MS = 10_000;
@@ -30,19 +35,19 @@ async function fetchJson(url, { timeoutMs = REQUEST_TIMEOUT_MS } = {}) {
 }
 
 /** CoinGecko simple-price. Aggregator, free tier, no key. */
-export function coingeckoSource(idsBySymbol) {
+export function coingeckoSource(resolver) {
   return {
     name: "coingecko",
     kind: "aggregator",
     async quotes(symbols) {
-      const wanted = symbols.filter((s) => idsBySymbol[s]);
+      const wanted = symbols.filter((s) => resolver.idFor("coingecko", s));
       if (wanted.length === 0) return [];
-      const ids = wanted.map((s) => idsBySymbol[s]).join(",");
+      const ids = wanted.map((s) => resolver.idFor("coingecko", s)).join(",");
       const data = await fetchJson(
         `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`,
       );
       return wanted
-        .map((symbol) => ({ symbol, price: data[idsBySymbol[symbol]]?.usd }))
+        .map((symbol) => ({ symbol, price: data[resolver.idFor("coingecko", symbol)]?.usd }))
         .filter((q) => Number.isFinite(q.price));
     },
   };
@@ -55,33 +60,39 @@ export function coingeckoSource(idsBySymbol) {
  * ticker (`SOL` is both `sol-solana` and `sol-binance-peg-sol`), so matching on
  * symbol would silently price a wrapped derivative as the real asset.
  */
-export function coinpaprikaSource(idsBySymbol) {
+export function coinpaprikaSource(resolver) {
   return {
     name: "coinpaprika",
     kind: "aggregator",
     async quotes(symbols) {
-      const wanted = symbols.filter((s) => idsBySymbol[s]);
+      const wanted = symbols.filter((s) => resolver.idFor("coinpaprika", s));
       if (wanted.length === 0) return [];
-      const all = await fetchJson("https://api.coinpaprika.com/v1/tickers", { timeoutMs: 15_000 });
+      const all = await fetchJson("https://api.coinpaprika.com/v1/tickers", { timeoutMs: 20_000 });
       const byId = new Map(all.map((t) => [t.id, t]));
       return wanted
-        .map((symbol) => ({ symbol, price: byId.get(idsBySymbol[symbol])?.quotes?.USD?.price }))
+        .map((symbol) => ({
+          symbol,
+          price: byId.get(resolver.idFor("coinpaprika", symbol))?.quotes?.USD?.price,
+        }))
         .filter((q) => Number.isFinite(q.price));
     },
   };
 }
 
-/** Bitstamp spot, USD-quoted. An independent venue, one request per pair. */
-export function bitstampSource(pairsBySymbol) {
+/**
+ * Bitstamp spot, USD-quoted. An independent venue, one request per pair.
+ *
+ * A pair that does not exist returns 404, which `Promise.allSettled` absorbs —
+ * an unlisted asset loses this source rather than failing the rebalance.
+ */
+export function bitstampSource() {
   return {
     name: "bitstamp",
     kind: "exchange",
     async quotes(symbols) {
-      const wanted = symbols.filter((s) => pairsBySymbol[s]);
-      if (wanted.length === 0) return [];
       const results = await Promise.allSettled(
-        wanted.map(async (symbol) => {
-          const data = await fetchJson(`https://www.bitstamp.net/api/v2/ticker/${pairsBySymbol[symbol]}`);
+        symbols.map(async (symbol) => {
+          const data = await fetchJson(`https://www.bitstamp.net/api/v2/ticker/${bitstampPair(symbol)}`);
           return { symbol, price: Number(data.last) };
         }),
       );
@@ -97,17 +108,17 @@ export function bitstampSource(pairsBySymbol) {
  *
  * Uses the v2 batch endpoint: v1 rejects the `AVAX:USD`-style symbols that
  * Bitfinex uses for longer tickers, so v1 silently loses those assets.
- * In v2's array response, index 7 is the last price.
+ * In v2's array response, index 7 is the last price. Unknown pairs are simply
+ * absent from the response.
  */
-export function bitfinexSource(pairsBySymbol) {
+export function bitfinexSource() {
   const LAST_PRICE_INDEX = 7;
   return {
     name: "bitfinex",
     kind: "exchange",
     async quotes(symbols) {
-      const wanted = symbols.filter((s) => pairsBySymbol[s]);
-      if (wanted.length === 0) return [];
-      const byPair = new Map(wanted.map((s) => [pairsBySymbol[s], s]));
+      if (symbols.length === 0) return [];
+      const byPair = new Map(symbols.map((s) => [bitfinexPair(s), s]));
       const rows = await fetchJson(
         `https://api-pub.bitfinex.com/v2/tickers?symbols=${[...byPair.keys()].join(",")}`,
       );

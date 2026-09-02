@@ -2,12 +2,24 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { screen, weight, toBasisPoints } from "../src/weighting.js";
 import { METHODOLOGY, TOTAL_WEIGHT_BPS } from "../src/methodology.js";
+import { FIXTURE_UNIVERSE } from "../src/fixtures.js";
 
+/**
+ * A candidate that passes every rule, shaped like what `collectFundamentals`
+ * emits. Volume scales with cap because turnover is a screening rule — a flat
+ * volume would fail the largest names on turnover rather than on the rule the
+ * test is actually exercising. The change values sit well outside the stable
+ * band: a quiet asset is classified as a stablecoin, and null reads as unknown
+ * volatility, so both are exclusions rather than a neutral default.
+ */
 const asset = (symbol, cap, over = {}) => ({
   symbol,
-  freeFloatMarketCapUsd: cap,
-  avgDailyVolumeUsd: 10_000_000,
+  name: `Asset ${symbol}`,
+  marketCapUsd: cap,
+  volume24hUsd: cap * 0.02,
   listingAgeDays: 400,
+  change24hPct: -2.5,
+  change7dPct: -6,
   ...over,
 });
 
@@ -15,15 +27,28 @@ test("screen excludes on each rule and reports why", () => {
   const { eligible, excluded } = screen([
     asset("BIG", 1e11),
     asset("SMALL", 1e6),
-    asset("THIN", 1e11, { avgDailyVolumeUsd: 1_000 }),
+    asset("THIN", 1e11, { volume24hUsd: 1_000 }),
     asset("NEW", 1e11, { listingAgeDays: 3 }),
-    asset("USDT", 1e11, { isStablecoin: true }),
+    // Stablecoins are detected from realized volatility, not a flag.
+    asset("USDT", 1e11, { change24hPct: -0.03, change7dPct: -0.01 }),
   ]);
   assert.deepEqual(eligible.map((a) => a.symbol), ["BIG"]);
   assert.deepEqual(
     Object.fromEntries(excluded.map((e) => [e.symbol, e.reason])),
     { SMALL: "market_cap", THIN: "volume", NEW: "listing_age", USDT: "stablecoin" },
   );
+});
+
+test("the offline fixture universe still exercises every exclusion rule", () => {
+  // `USE_FIXTURE_PRICES=1` is the offline dev path. If an edit to the fixture
+  // left only clean names in it, that path would wave everything through and
+  // stop testing the screen at all — silently.
+  const { eligible, excluded } = screen(FIXTURE_UNIVERSE);
+  const reasons = new Set(excluded.map((e) => e.reason));
+  for (const reason of ["stablecoin", "derivative", "commodity", "volume", "turnover", "listing_age"]) {
+    assert.ok(reasons.has(reason), `fixture universe no longer triggers ${reason}`);
+  }
+  assert.equal(eligible.length, METHODOLOGY.targetSize);
 });
 
 test("screen truncates to targetSize, largest first", () => {

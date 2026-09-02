@@ -5,8 +5,7 @@
  *   node src/cli.js init                    initialize a freshly deployed contract
  *   node src/cli.js status                  show on-chain head and local state
  */
-import { buildSources, loadConfig } from "./config.js";
-import { SEED_UNIVERSE } from "./universe.js";
+import { buildFundamentalsProviders, buildSources, loadConfig } from "./config.js";
 import { runRebalance } from "./rebalance.js";
 import { stateStore } from "./state.js";
 import { createPublisher } from "./publisher.js";
@@ -28,16 +27,38 @@ async function cmdRebalance({ dryRun }) {
 
   const { update, state, audit } = await runRebalance({
     sources: buildSources(config),
-    universe: SEED_UNIVERSE,
+    fundamentalsProviders: buildFundamentalsProviders(config),
     previousState,
   });
 
   console.log(`epoch ${update.epoch}  level ${audit.levelDisplay}  methodology ${audit.methodologyHash.slice(0, 12)}…`);
+  console.log(`universe ${audit.universeSize} screened -> ${update.constituents.length} constituents`);
   for (const c of update.constituents) {
-    console.log(`  ${c.symbol.padEnd(6)} ${(c.weight_bps / 100).toFixed(2)}%`);
+    const f = audit.fundamentals[c.symbol];
+    const mcap = f ? `$${(f.marketCapUsd / 1e9).toFixed(1)}B` : "";
+    console.log(`  ${c.symbol.padEnd(7)} ${(c.weight_bps / 100).toFixed(2).padStart(6)}%  ${mcap}`);
   }
+
+  // Exclusions are the audit trail for why a name is absent, so summarize them
+  // by reason rather than listing every asset that failed to make a 20-name cut.
+  const byReason = new Map();
+  for (const e of audit.excluded) {
+    if (!byReason.has(e.reason)) byReason.set(e.reason, []);
+    byReason.get(e.reason).push(e.symbol);
+  }
+  if (byReason.size) {
+    console.log("excluded:");
+    for (const [reason, symbols] of [...byReason].sort((a, b) => b[1].length - a[1].length)) {
+      const shown = symbols.slice(0, 8).join(" ");
+      const more = symbols.length > 8 ? ` +${symbols.length - 8} more` : "";
+      console.log(`  ${reason.padEnd(20)} ${shown}${more}`);
+    }
+  }
+  if (audit.providerErrors.length) console.warn("provider errors:", audit.providerErrors);
   if (audit.sourceErrors.length) console.warn("source errors:", audit.sourceErrors);
-  if (audit.priceRejections.length) console.warn("price rejections:", audit.priceRejections);
+  if (audit.priceRejections.length) {
+    console.warn("price rejections:", audit.priceRejections.map((r) => `${r.symbol} (${r.rejected})`).join(", "));
+  }
 
   if (dryRun) {
     console.log("dry run — nothing published, state unchanged");
