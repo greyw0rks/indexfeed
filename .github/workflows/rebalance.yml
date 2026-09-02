@@ -10,9 +10,12 @@ name: Weekly rebalance
 
 on:
   schedule:
-    # Mondays 03:17 UTC. Off the hour deliberately: GitHub delays scheduled runs
-    # most at :00, and on a weekly cadence a few minutes of drift is irrelevant.
-    - cron: "17 3 * * 1"
+    # Thursdays 03:17 UTC. Epoch 2 landed Wednesday 2026-09-02 22:49, so a
+    # Thursday slot is the first weekday where each run sits a full cadence after
+    # the last — anchoring on Monday would have skipped a week to get there. Off
+    # the hour deliberately: GitHub delays scheduled runs most at :00, and on a
+    # weekly cadence a few minutes of drift is irrelevant.
+    - cron: "17 3 * * 4"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -66,10 +69,18 @@ jobs:
         working-directory: packages/aggregator
         env:
           DRY_RUN: ${{ inputs.dry_run }}
+          EVENT: ${{ github.event_name }}
         run: |
           if [ "${DRY_RUN}" = "true" ]; then
             node src/cli.js rebalance --dry-run
+          elif [ "${EVENT}" = "schedule" ]; then
+            # A cron firing before the cadence is due is not a failure, so the
+            # run exits clean as a no-op instead of mailing an alert every week
+            # the schedule and the cadence disagree.
+            node src/cli.js rebalance --if-due
           else
+            # Manual publish: refuse loudly rather than silently skipping, so a
+            # deliberate trigger that would break the cadence says why.
             node src/cli.js rebalance
           fi
 

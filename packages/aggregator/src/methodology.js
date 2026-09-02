@@ -105,3 +105,37 @@ function canonicalize(value) {
 export function methodologyHash(methodology = METHODOLOGY) {
   return createHash("sha256").update(canonicalize(methodology)).digest("hex");
 }
+
+/**
+ * Fraction of the cadence that must elapse before the next epoch is due.
+ *
+ * Not 1.0, because a scheduled publisher drifts: GitHub's cron fires late under
+ * load, so a run following a delayed one is slightly under a full cadence and
+ * must not be treated as off-cadence. 0.9 of seven days leaves about 17 hours of
+ * slack — enough to absorb drift, tight enough to still block a second publish
+ * in the same day.
+ */
+export const CADENCE_TOLERANCE = 0.9;
+
+/**
+ * Whether the next epoch is due, given when the head epoch was published.
+ *
+ * The contract enforces epoch *succession* but never looks at the clock, so the
+ * cadence is a methodology commitment that has to be checked off-chain. Without
+ * it a manual trigger can stack an epoch minutes after a scheduled one, and the
+ * published interval stops matching the documented one.
+ */
+export function cadenceGate({
+  publishedAtSeconds,
+  now = Date.now(),
+  methodology = METHODOLOGY,
+  tolerance = CADENCE_TOLERANCE,
+}) {
+  const elapsedMs = now - publishedAtSeconds * 1000;
+  const dueAfterMs = methodology.cadenceDays * 86_400_000 * tolerance;
+  return {
+    isDue: elapsedMs >= dueAfterMs,
+    elapsedMs,
+    remainingMs: Math.max(0, dueAfterMs - elapsedMs),
+  };
+}

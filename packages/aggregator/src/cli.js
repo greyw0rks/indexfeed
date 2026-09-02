@@ -4,12 +4,17 @@
  *   node src/cli.js rebalance [--dry-run]   compute (and optionally publish) the next epoch
  *   node src/cli.js init                    initialize a freshly deployed contract
  *   node src/cli.js status                  show on-chain head and local state
+ *
+ * Publishing is gated on the methodology cadence. `--force` publishes anyway;
+ * `--if-due` turns a not-due run into a no-op exit instead of an error, which is
+ * what a scheduled publisher wants.
  */
 import { buildFundamentalsProviders, buildSources, loadConfig } from "./config.js";
 import { runRebalance } from "./rebalance.js";
 import { stateStore } from "./state.js";
 import { createPublisher } from "./publisher.js";
 import { fromScaledValue } from "./index-math.js";
+import { METHODOLOGY, cadenceGate } from "./methodology.js";
 
 function requirePublisher(config) {
   return createPublisher({
@@ -20,8 +25,44 @@ function requirePublisher(config) {
   });
 }
 
-async function cmdRebalance({ dryRun }) {
+const hours = (ms) => (ms / 3_600_000).toFixed(1);
+
+/**
+ * Is the next epoch due? Returns null when nothing is published yet, so
+ * inception is never gated.
+ *
+ * Checked against the chain rather than local state: the chain's `published_at`
+ * is what a third party sees, and local state can be restored from a backup with
+ * a stale timestamp.
+ */
+async function cadenceCheck(publisher) {
+  const head = await publisher.head();
+  if (head === null) return null;
+  const latest = await publisher.latest();
+  const gate = cadenceGate({ publishedAtSeconds: Number(latest.published_at) });
+  return {
+    ...gate,
+    reason:
+      `epoch ${head} was published ${hours(gate.elapsedMs)}h ago; the ` +
+      `${METHODOLOGY.cadenceDays}-day cadence is not due for another ${hours(gate.remainingMs)}h`,
+  };
+}
+
+async function cmdRebalance({ dryRun, force, ifDue }) {
   const config = loadConfig();
+
+  // Checked before computing, so a not-due run costs no provider requests.
+  if (!dryRun && !force) {
+    const cadence = await cadenceCheck(requirePublisher(config));
+    if (cadence && !cadence.isDue) {
+      if (ifDue) {
+        console.log(`${cadence.reason} — nothing to do`);
+        return;
+      }
+      throw new Error(`${cadence.reason}. Pass --force to publish anyway.`);
+    }
+  }
+
   const store = stateStore(config.stateDir);
   const previousState = await store.load();
 
@@ -116,18 +157,31 @@ async function cmdStatus() {
   console.log(`chain epoch   ${head}`);
   console.log(`chain level   ${fromScaledValue(latest.value)}`);
   console.log(`published at  ${new Date(Number(latest.published_at) * 1000).toISOString()}`);
+  const gate = cadenceGate({ publishedAtSeconds: Number(latest.published_at) });
+  console.log(
+    gate.isDue
+      ? `cadence       due (${hours(gate.elapsedMs)}h since epoch ${head})`
+      : `cadence       not due for ${hours(gate.remainingMs)}h`,
+  );
 }
 
 const [command, ...flags] = process.argv.slice(2);
 const commands = {
-  rebalance: () => cmdRebalance({ dryRun: flags.includes("--dry-run") }),
+  rebalance: () =>
+    cmdRebalance({
+      dryRun: flags.includes("--dry-run"),
+      force: flags.includes("--force"),
+      ifDue: flags.includes("--if-due"),
+    }),
   init: cmdInit,
   status: cmdStatus,
 };
 
 const run = commands[command];
 if (!run) {
-  console.error(`usage: cli.js <${Object.keys(commands).join("|")}> [--dry-run]`);
+  console.error(
+    `usage: cli.js <${Object.keys(commands).join("|")}> [--dry-run] [--force] [--if-due]`,
+  );
   process.exit(1);
 }
 run().catch((err) => {

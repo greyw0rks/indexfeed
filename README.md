@@ -110,6 +110,16 @@ that push fails, the epoch is on-chain but its state is not in the repo, and
 every later rebalance will fail the succession check until it is — the run
 uploads `state/` as an artifact for exactly that case and fails loudly.
 
+**Cadence is enforced off-chain.** `publish` checks epoch succession but never
+looks at the clock, so nothing on-chain stops two epochs landing minutes apart —
+which is how epochs 0 and 1 came to be 84 minutes apart during bring-up. The CLI
+now refuses to publish until 90% of `cadenceDays` has elapsed since the chain's
+`published_at`. The fraction rather than an exact interval is for scheduler
+drift: a run following a delayed one is slightly under a full cadence through no
+fault of its own. `--force` overrides the check; `--if-due` downgrades a not-due
+run to a clean no-op, which is what the scheduled trigger passes so an early cron
+does not mail a failure. `status` prints how long is left.
+
 ## How it works
 
 **Universe.** Constituent candidates are discovered live from CoinGecko and
