@@ -1,47 +1,107 @@
 {
-  "epoch": 1,
+  "epoch": 2,
   "basket": [
     {
       "symbol": "BTC",
-      "units": 3.2086048107125302
+      "units": 3.2436415712516466,
+      "lastPrice": 77073.86729031554
     },
     {
       "symbol": "ETH",
-      "units": 102.38741881932957
+      "units": 104.92385605453866,
+      "lastPrice": 2382.680254050631
+    },
+    {
+      "symbol": "BNB",
+      "units": 178.94927009570006,
+      "lastPrice": 686.555
     },
     {
       "symbol": "XRP",
-      "units": 150598.1335455761
+      "units": 84263.56596063034,
+      "lastPrice": 1.347485
     },
     {
       "symbol": "SOL",
-      "units": 1456.7379776325167
+      "units": 786.664617417662,
+      "lastPrice": 99.68388727179213
     },
     {
-      "symbol": "ADA",
-      "units": 240099.8200595909
+      "symbol": "TRX",
+      "units": 127588.36474929328,
+      "lastPrice": 0.3247042558619227
     },
     {
-      "symbol": "AVAX",
-      "units": 3653.112915832199
+      "symbol": "HYPE",
+      "units": 299.1807416186131,
+      "lastPrice": 81.50999999999999
+    },
+    {
+      "symbol": "ZEC",
+      "units": 22.334490618961116,
+      "lastPrice": 811.3987976806679
+    },
+    {
+      "symbol": "DOGE",
+      "units": 220006.11372726038,
+      "lastPrice": 0.081111
+    },
+    {
+      "symbol": "XMR",
+      "units": 25.24361153855451,
+      "lastPrice": 505.12
+    },
+    {
+      "symbol": "WBT",
+      "units": 158.53665704133974,
+      "lastPrice": 70.60465219917275
     },
     {
       "symbol": "LINK",
-      "units": 2002.2528661394272
+      "units": 1005.6252049455242,
+      "lastPrice": 11.064
+    },
+    {
+      "symbol": "ADA",
+      "units": 51311.4676541701,
+      "lastPrice": 0.19869268838283555
     },
     {
       "symbol": "XLM",
-      "units": 117284.84781182228
+      "units": 46659.80872085726,
+      "lastPrice": 0.174307
     },
     {
-      "symbol": "DOT",
-      "units": 20421.844511887964
+      "symbol": "BCH",
+      "units": 26.997671165472017,
+      "lastPrice": 242.69
+    },
+    {
+      "symbol": "LTC",
+      "units": 102.88850415583464,
+      "lastPrice": 49.59312586304877
+    },
+    {
+      "symbol": "GRAM",
+      "units": 3731.0455341742195,
+      "lastPrice": 1.3284432346634678
     },
     {
       "symbol": "UNI",
-      "units": 2575.0840869754825
+      "units": 840.1589360854597,
+      "lastPrice": 5.846455000000001
+    },
+    {
+      "symbol": "HBAR",
+      "units": 58940.37162251174,
+      "lastPrice": 0.074087
+    },
+    {
+      "symbol": "AVAX",
+      "units": 573.8293239877931,
+      "lastPrice": 7.160956407648694
     }
   ],
-  "divisor": 1000.8497689602593,
-  "methodologyHash": "6b044703b1a9a071e6648e0570ebfeba1a09cb4ebc59307d457c619f42eb96ca"
+  "divisor": 1012.4908118513835,
+  "methodologyHash": "65a4bcc8943d031912939bf88aa46a323e9c8c3427c6811ce65e415d8162b901"
 }
