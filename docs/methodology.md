@@ -1,11 +1,14 @@
-# IndexFeed Methodology v1.0.0
+# IndexFeed Methodology v1.1.0
 
 The rules that decide what the index contains and what it is worth. This document
 is the human-readable form of `packages/aggregator/src/methodology.js`; the code is
 authoritative, and its SHA-256 hash is published on-chain with every update so a
 reader can tell whether two epochs were computed under the same rules.
 
-Methodology hash of v1.0.0: `6b044703b1a9…` (see `node -e` below to recompute).
+Methodology hash of v1.1.0: `65a4bcc8943d…` (see `node -e` below to recompute).
+Epochs 0 and 1 were published under v1.0.0 (`6b044703b1a9…`), which screened a
+static universe snapshot; the hash change is how that difference is visible
+on-chain.
 
 ```bash
 cd packages/aggregator
@@ -14,9 +17,24 @@ node -e "import('./src/methodology.js').then(m => console.log(m.methodologyHash(
 
 ## 1. Universe
 
-The candidate universe is the set of assets considered for inclusion. Membership
-is candidacy, not inclusion — the eligibility screen decides what actually enters
+The candidate universe is discovered live from two fundamentals providers —
+CoinGecko `/coins/markets` and CoinPaprika `/v1/tickers` — drawn from roughly the
+top **150** assets by market cap per provider (`UNIVERSE_SIZE`; CoinGecko's free
+tier pages at 100 per request, so it fetches in whole pages). Membership is
+candidacy, not inclusion; the eligibility screen decides what actually enters
 each epoch.
+
+Providers are merged by ticker:
+
+| Field | Merge rule | Why |
+| --- | --- | --- |
+| Market cap, volume, price, % change | Median of reporting providers | Caps agree within 0.2%; volumes differ 8–25%, so a single provider is not trusted |
+| Listing age | **Oldest** claim, nulls ignored | Age is a lower bound; a provider that began tracking late is wrong in a knowable direction |
+| Provider ids | Kept per provider | Aggregator price adapters need each provider's own opaque slug (`avalanche-2`, `avax-avalanche`) |
+
+An asset reported by only one provider is kept but records how many providers
+saw it, so the screen can act on corroboration. A provider that errors is
+recorded in the audit trail and does not fail the rebalance.
 
 ## 2. Eligibility
 
@@ -24,14 +42,67 @@ An asset is eligible when all of the following hold:
 
 | Rule | Threshold | Why |
 | --- | --- | --- |
-| Free-float market cap | ≥ $50,000,000 | Excludes assets too small to represent the market |
-| 30-day average daily volume | ≥ $1,000,000 | Illiquid names cannot be priced or tracked reliably |
+| Market cap | ≥ $50,000,000 | Excludes assets too small to represent the market |
+| 24h volume | ≥ $1,000,000 | Absolute floor on tradeability |
+| Turnover (24h volume ÷ market cap) | ≥ 50bps | Scale-invariant liquidity test; the load-bearing rule |
 | Listing age | ≥ 90 days | Excludes launch-price noise and thin early order books |
-| Not a stablecoin | — | Stablecoins track the dollar, not the crypto market |
+| Reporting providers | ≥ 1 | Corroboration floor |
+| Not a stablecoin, derivative, or commodity token | — | See §2.1 |
 
-Eligible assets are ranked by free-float market cap and the top **20** are
-selected. An asset without a consensus price (§3) is excluded before screening —
-it cannot be weighted, so it is dropped rather than priced on thin evidence.
+Market cap is computed on **circulating supply**, the closest free-data proxy for
+free float. It excludes unissued supply but not locked, treasury, or team
+holdings, so it overstates float for assets with large vesting schedules.
+
+Turnover is the rule that matters and the absolute volume floor is only a
+backstop. Weights are market-cap proportional, so an illiquid mega-cap receives a
+weight its order book cannot support — the index would claim exposure that could
+not be traded. Measured 2026-08-31: LEO showed a $8.9B cap against $0.2M of daily
+volume (0.002%) while AAVE at $1.9B traded $231M (12%). The absolute floor alone
+would have ranked LEO 4th by weight.
+
+Eligible assets are ranked by market cap and the top **20** are selected.
+
+Screening runs **before** pricing: it reads provider data already in hand, so
+doing it first avoids fetching exchange quotes for names that cannot enter. An
+asset that passes screening but has no consensus price (§3) is dropped from the
+epoch as a *pricing* failure, and is reported separately from an eligibility one.
+
+### 2.1 What is not an index name
+
+Stablecoins track the dollar rather than the crypto market. Wrapped and staked
+derivatives duplicate exposure already in the index — WBTC alongside BTC is the
+same bet twice. Commodity tokens are gold exposure wearing a token. All three are
+excluded by classification rather than by denylist, because a denylist goes stale
+the moment a new derivative launches.
+
+There is no free, reliable tag API for this: CoinPaprika's `/coins/{id}` tags are
+inconsistent (stETH is tagged "Liquid Staking Token" while WBTC and USDT carry no
+tags) and cost one request per asset. Two complementary signals are used instead:
+
+| Signal | Catches | Rule |
+| --- | --- | --- |
+| Realized volatility | Stablecoins | \|24h change\| ≤ 0.5% **and** \|7d change\| ≤ 0.5% |
+| Naming and ticker patterns | Wrapped, staked, bridged, synthetic assets | `wrapped`/`staked`/`bridged`/`pegged`/`synthetic`/`tokenized` in the name, plus a short ticker list |
+
+Both windows must be quiet for the volatility test to convict, because a flat 24h
+is ordinary for any large asset. Verified 2026-08-31: every known stablecoin moved
+≤0.10% over both windows while the least volatile non-stable moved 0.79%. The test
+is peg-agnostic, so it correctly catches yield-bearing stables trading at 1.25
+(sUSDe) or 1.11 (sUSDS) that a "price near $1" test would miss.
+
+Derivatives track their underlying's volatility exactly, so the volatility signal
+cannot see them — hence the second signal. Classification runs before the numeric
+rules and commodity/derivative checks run before the stablecoin check, so an asset
+is reported under its structural reason rather than whichever rule it also happens
+to fail.
+
+An asset missing either change window cannot be tested for stability and is
+excluded as `unknown_volatility`. Excluding is the safe direction: admitting a
+stablecoin corrupts the index, while excluding one real asset costs a slot in a
+20-name index.
+
+Every exclusion is written to the audit trail with its reason, so a wrong call is
+visible rather than silent.
 
 ## 3. Pricing
 
@@ -69,8 +140,8 @@ condition rather than an incident.
 
 ## 4. Weighting
 
-Weights are **free-float-adjusted market capitalization**, with a **25%**
-concentration cap per constituent.
+Weights are **market-capitalization** proportional, on the circulating-supply
+basis described in §2, with a **25%** concentration cap per constituent.
 
 The cap is applied iteratively. Capping one name redistributes its excess to the
 others in proportion to their own weights, which can lift a second name over the

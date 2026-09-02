@@ -30,7 +30,7 @@ end: epochs are published on-chain and paid reads settle real USDC.
 | Component | State |
 | --- | --- |
 | Oracle contract | Deployed to Testnet, 8 unit tests passing |
-| Aggregator | Live prices from 4 sources, epochs 0 and 1 published on-chain |
+| Aggregator | Live universe discovery + live prices, epochs 0 and 1 published on-chain |
 | x402 API | Serving; all three paid routes settle end to end |
 | Reference client | Completes payment and reads — no API key, no account |
 
@@ -46,7 +46,11 @@ Epoch 1 confirms the continuity adjustment holds against the chain: the level mo
 1000.0000000 → 999.1509525 on price movement alone, and epoch 0 remains readable at
 its original value. Rebalancing does not reset the index.
 
-Not yet done: mainnet deployment, live fundamentals feed, monitoring.
+Not yet done: mainnet deployment and monitoring.
+
+Methodology is now at **v1.1.0** (hash `65a4bcc8943d…`). Epochs 0 and 1 were
+published under v1.0.0, which screened a static universe snapshot — the hash
+change is how that difference is visible on-chain.
 
 ## Layout
 
@@ -85,6 +89,18 @@ node src/cli.js latest        # pays, then reads
 ```
 
 ## How it works
+
+**Universe.** Constituent candidates are discovered live from CoinGecko and
+CoinPaprika rather than a hardcoded list, and merged by ticker — market caps are
+medianed, listing age takes the oldest claim. Eligibility then screens on market
+cap, an absolute volume floor, turnover, and listing age. Turnover is the rule
+that does the work: weights are market-cap proportional, so an illiquid mega-cap
+would receive a weight its order book cannot support. Stablecoins, wrapped and
+staked derivatives, and commodity tokens are excluded by classification rather
+than a denylist — realized volatility catches stables (peg-agnostically, so
+yield-bearing ones trading at 1.25 are still caught), and naming patterns catch
+derivatives, which track their underlying's volatility too closely for the first
+signal to see. Every exclusion is recorded with its reason.
 
 **Prices.** Four sources, deliberately of two kinds. Bitstamp and Bitfinex are
 independent exchanges; CoinGecko and CoinPaprika are volume-weighted composites.
@@ -132,9 +148,6 @@ the paid endpoint cannot forge an index update.
 
 ## Remaining work
 
-- **Live fundamentals.** `SEED_UNIVERSE` in `packages/aggregator/src/universe.js`
-  is a static snapshot. Eligibility reads from it, so a stale snapshot means a
-  stale index. Prices are live; the composition inputs are not.
 - **Mainnet.** Needs a provider RPC URL (pubnet has no public RPC), a mainnet
   facilitator (`www.x402.org/facilitator` is testnet-only), and the mainnet USDC
   issuer.
