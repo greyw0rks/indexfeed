@@ -1,0 +1,1270 @@
+{
+  "computedAt": "2026-11-12T11:25:53.535Z",
+  "methodologyVersion": "1.1.0",
+  "methodologyHash": "65a4bcc8943d031912939bf88aa46a323e9c8c3427c6811ce65e415d8162b901",
+  "levelDisplay": "879.4125652",
+  "previousLevel": 879.4125651878147,
+  "staleCarriedForward": [],
+  "universeSize": 234,
+  "fundamentals": {
+    "BTC": {
+      "marketCapUsd": 1474031644275,
+      "volume24hUsd": 18020518662.47749,
+      "listingAgeDays": 5962,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "ETH": {
+      "marketCapUsd": 249481450205.5,
+      "volume24hUsd": 6934793188.903921,
+      "listingAgeDays": 4115,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "XRP": {
+      "marketCapUsd": 66367362327,
+      "volume24hUsd": 1268019828.535491,
+      "listingAgeDays": 4848,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "SOL": {
+      "marketCapUsd": 48982903311,
+      "volume24hUsd": 1555547675.6277556,
+      "listingAgeDays": 2269,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "TRX": {
+      "marketCapUsd": 30067502038,
+      "volume24hUsd": 211429706.42266595,
+      "listingAgeDays": 3347,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "HYPE": {
+      "marketCapUsd": 17136016843,
+      "volume24hUsd": 495792295.97387516,
+      "listingAgeDays": 703,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "ZEC": {
+      "marketCapUsd": 16532631248,
+      "volume24hUsd": 880475107.8096037,
+      "listingAgeDays": 3666,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "DOGE": {
+      "marketCapUsd": 10993766621,
+      "volume24hUsd": 404847246.4869011,
+      "listingAgeDays": 4715,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "XMR": {
+      "marketCapUsd": 10532123501,
+      "volume24hUsd": 149316518.12878114,
+      "listingAgeDays": 4558,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "WBT": {
+      "marketCapUsd": 8388154714,
+      "volume24hUsd": 127532833.71103232,
+      "listingAgeDays": 1539,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "LINK": {
+      "marketCapUsd": 7713044729.5,
+      "volume24hUsd": 207856208.24444887,
+      "listingAgeDays": 3340,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "ADA": {
+      "marketCapUsd": 6616259830.5,
+      "volume24hUsd": 157501083.70288706,
+      "listingAgeDays": 3329,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "XLM": {
+      "marketCapUsd": 5150079155,
+      "volume24hUsd": 112324569.37277603,
+      "listingAgeDays": 4482,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "BCH": {
+      "marketCapUsd": 4608746821.5,
+      "volume24hUsd": 80954664.81120875,
+      "listingAgeDays": 3399,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "NEAR": {
+      "marketCapUsd": 4566118971,
+      "volume24hUsd": 435846019.50300133,
+      "listingAgeDays": 2158,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "LTC": {
+      "marketCapUsd": 3791730425.5,
+      "volume24hUsd": 206814479.57122785,
+      "listingAgeDays": 5509,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "UNI": {
+      "marketCapUsd": 3746475605,
+      "volume24hUsd": 353947952.2958367,
+      "listingAgeDays": 2247,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "AVAX": {
+      "marketCapUsd": 3692994154.5,
+      "volume24hUsd": 188625673.37467846,
+      "listingAgeDays": 2288,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "GRAM": {
+      "marketCapUsd": 3522017873,
+      "volume24hUsd": 114854973.55053638,
+      "listingAgeDays": 1882,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "SUI": {
+      "marketCapUsd": 3360340511,
+      "volume24hUsd": 208992780.51572055,
+      "listingAgeDays": 1358,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    }
+  },
+  "prices": {
+    "BTC": {
+      "price": 73282.12794605846,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "ETH": {
+      "price": 2040.8440754235373,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "XRP": {
+      "price": 1.0445353124407757,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "SOL": {
+      "price": 82.81131254918171,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "TRX": {
+      "price": 0.3164979094155209,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "HYPE": {
+      "price": 71.45400000000001,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "ZEC": {
+      "price": 990.6,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "DOGE": {
+      "price": 0.06700299534252303,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "XMR": {
+      "price": 559.51,
+      "sources": [
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "WBT": {
+      "price": 70.67226112542824,
+      "sources": [
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "LINK": {
+      "price": 10.055387285910516,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "ADA": {
+      "price": 0.1727783090660608,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "XLM": {
+      "price": 0.145513,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "BCH": {
+      "price": 229.2684317392962,
+      "sources": [
+        "bitstamp",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "NEAR": {
+      "price": 3.4817911761694647,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "LTC": {
+      "price": 49.43927305992059,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "UNI": {
+      "price": 6.1626783585826,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "AVAX": {
+      "price": 8.503,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "GRAM": {
+      "price": 1.233585345829536,
+      "sources": [
+        "bitstamp",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "SUI": {
+      "price": 0.8116455686796149,
+      "sources": [
+        "bitstamp",
+        "bitfinex",
+        "coingecko",
+        "coinpaprika"
+      ]
+    },
+    "BNB": {
+      "price": 668.73,
+      "sources": [
+        "bitstamp",
+        "coingecko",
+        "coinpaprika"
+      ]
+    }
+  },
+  "priceRejections": [],
+  "sourceErrors": [],
+  "providerErrors": [],
+  "excluded": [
+    {
+      "symbol": "USDT",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "BNB",
+      "reason": "turnover",
+      "detail": "48.3bps of 50"
+    },
+    {
+      "symbol": "USDC",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "FIGR_HELOC",
+      "reason": "unknown_volatility"
+    },
+    {
+      "symbol": "STETH",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "WSTETH",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "USDS",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "WBTC",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "LEO",
+      "reason": "volume",
+      "detail": "$0.85M"
+    },
+    {
+      "symbol": "WBETH",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "CBBTC",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "DAI",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "WEETH",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "USDE",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "SUSDS",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "CC",
+      "reason": "turnover",
+      "detail": "14.8bps of 50"
+    },
+    {
+      "symbol": "USD1",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "WETH",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "RAIN",
+      "reason": "turnover",
+      "detail": "23.8bps of 50"
+    },
+    {
+      "symbol": "RLUSD",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "USDG",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "PYUSD",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "CRO",
+      "reason": "turnover",
+      "detail": "25.5bps of 50"
+    },
+    {
+      "symbol": "USDY",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "USYC",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "XAUT",
+      "reason": "commodity"
+    },
+    {
+      "symbol": "EURSAFO",
+      "reason": "volume",
+      "detail": "$0.00M"
+    },
+    {
+      "symbol": "BTW",
+      "reason": "turnover",
+      "detail": "31.8bps of 50"
+    },
+    {
+      "symbol": "USDF",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "M",
+      "reason": "turnover",
+      "detail": "9.7bps of 50"
+    },
+    {
+      "symbol": "PAXG",
+      "reason": "commodity"
+    },
+    {
+      "symbol": "BUIDL",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "U",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "HTX",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "FTM",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "SKY",
+      "reason": "turnover",
+      "detail": "40.0bps of 50"
+    },
+    {
+      "symbol": "BFUSD",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "USDD",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "SYRUPUSDC",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "SUSDE",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "JITOSOL",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "USDGO",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "AGIX",
+      "reason": "volume",
+      "detail": "$0.01M"
+    },
+    {
+      "symbol": "WBNB",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "RETH",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "KHYPE",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "OUSD",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "RSETH",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "KCS",
+      "reason": "turnover",
+      "detail": "38.2bps of 50"
+    },
+    {
+      "symbol": "JLP",
+      "reason": "turnover",
+      "detail": "11.3bps of 50"
+    },
+    {
+      "symbol": "LBTC",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "METH",
+      "reason": "volume",
+      "detail": "$0.51M"
+    },
+    {
+      "symbol": "PI",
+      "reason": "turnover",
+      "detail": "37.2bps of 50"
+    },
+    {
+      "symbol": "BNSOL",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "USTB",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "USDC.E",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "LSETH",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "GHO",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "ZRO",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "NEXO",
+      "reason": "turnover",
+      "detail": "29.2bps of 50"
+    },
+    {
+      "symbol": "JAAA",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "USD0",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "JUPSOL",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "PEARL",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "TUSD",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "EOS",
+      "reason": "volume",
+      "detail": "$0.26M"
+    },
+    {
+      "symbol": "币安人生",
+      "reason": "turnover",
+      "detail": "35.5bps of 50"
+    },
+    {
+      "symbol": "EUTBL",
+      "reason": "volume",
+      "detail": "$0.00M"
+    },
+    {
+      "symbol": "YLDS",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "MSOL",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "SOLVBTC",
+      "reason": "volume",
+      "detail": "$0.01M"
+    },
+    {
+      "symbol": "HASH",
+      "reason": "volume",
+      "detail": "$0.00M"
+    },
+    {
+      "symbol": "WTRX",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "QFI",
+      "reason": "volume",
+      "detail": "$0.02M"
+    },
+    {
+      "symbol": "CBETH",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "REUSD",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "USDTB",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "KAU",
+      "reason": "commodity"
+    },
+    {
+      "symbol": "STKAAVE",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "TON",
+      "reason": "volume",
+      "detail": "$0.06M"
+    },
+    {
+      "symbol": "BTC.B",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "DRV",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "SOFID",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "OUSG",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "KITE",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "FF",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "APXUSD",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "FDUSD",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "AERO",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "PENDLE",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "FRXETH",
+      "reason": "volume",
+      "detail": "$0.16M"
+    },
+    {
+      "symbol": "APEPE",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "LDO",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "SAFO",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "XPL",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "BONK",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "OHM",
+      "reason": "volume",
+      "detail": "$0.22M"
+    },
+    {
+      "symbol": "SHFL",
+      "reason": "volume",
+      "detail": "$0.35M"
+    },
+    {
+      "symbol": "PC0000031",
+      "reason": "unknown_volatility"
+    },
+    {
+      "symbol": "BEAM",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "OP",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "FRAX",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "SPCXB",
+      "reason": "derivative"
+    },
+    {
+      "symbol": "BP",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "OZO",
+      "reason": "volume",
+      "detail": "$0.30M"
+    },
+    {
+      "symbol": "LUNC",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "CFX",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "NFT",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "KAIA",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "DCR",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "USX",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "COMP",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "ANVL",
+      "reason": "volume",
+      "detail": "$0.44M"
+    },
+    {
+      "symbol": "MON",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "AR",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "FLOKI",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "RUNE",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "KOGE",
+      "reason": "volume",
+      "detail": "$0.00M"
+    },
+    {
+      "symbol": "EURCV",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "MGLO",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "KAG",
+      "reason": "volume",
+      "detail": "$0.09M"
+    },
+    {
+      "symbol": "KMNO",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "GRT",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "BAT",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "ENS",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "BTSE",
+      "reason": "volume",
+      "detail": "$0.62M"
+    },
+    {
+      "symbol": "USAT",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "AKT",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "ZBCN",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "USTBL",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "JASMY",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "JTO",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "GEOD",
+      "reason": "volume",
+      "detail": "$0.42M"
+    },
+    {
+      "symbol": "CARDS",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "FLUID",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "MET",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "PC0000033",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "TWT",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "A7A5",
+      "reason": "volume",
+      "detail": "$0.00M"
+    },
+    {
+      "symbol": "IOTA",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "CAP",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "EIGEN",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "USDAI",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "CVX",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "AUSD",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "ZAMA",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "WIF",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "GOMINING",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "GUSD",
+      "reason": "stablecoin"
+    },
+    {
+      "symbol": "SYRUP",
+      "reason": "unknown_listing_age"
+    },
+    {
+      "symbol": "HBAR",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "SHIB",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "TAO",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "QNT",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "OKB",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "ENA",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "PEPE",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "AAVE",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "ONDO",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "PUMP",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "WLFI",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "ICP",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "DOT",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "MNT",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "ASTER",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "JST",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "BGB",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "WLD",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "GT",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "ETC",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "ARB",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "VVV",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "MORPHO",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "POL",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "JUP",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "RENDER",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "KAS",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "ALGO",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "LIT",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "NIGHT",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "INJ",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "ATOM",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "FIL",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "ETHFI",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "CAKE",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "STX",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "BDX",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "DASH",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "PYTH",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "APT",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "XDC",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "STABLE",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "FLR",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "VET",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "RAY",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "TIA",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "EURC",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "PENGU",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "CRV",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "PIEVERSE",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "TBTC",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "FET",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "VIRTUAL",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "BTT",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "SPX",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "GRASS",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "BSV",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "SUN",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "SEI",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "TRUMP",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "GNO",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "STRK",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "UB",
+      "reason": "below_target_size"
+    },
+    {
+      "symbol": "XTZ",
+      "reason": "below_target_size"
+    }
+  ],
+  "txHash": "b4a4b69201f82547b747b95628064db72b75f5a5d68bff032f2971a9facd9d5f"
+}
